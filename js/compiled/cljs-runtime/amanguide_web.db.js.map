@@ -1,0 +1,1 @@
+{"version":3,"sources":["amanguide_web/db.cljs"],"mappings":";AAEA,AAAA,AAAA,AAAA,AAAKA","names":["amanguide-web.db/default-db"],"sourcesContent":["(ns amanguide-web.db)\n\n(def default-db\n  {:name \"re-frame\"})\n"]}

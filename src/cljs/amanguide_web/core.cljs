@@ -4,9 +4,7 @@
    [re-frame.core :as re-frame]
    [amanguide-web.events :as events]
    [amanguide-web.views :as views]
-   [amanguide-web.config :as config]
-   ))
-
+   [amanguide-web.config :as config]))
 
 (defn dev-setup []
   (when config/debug?

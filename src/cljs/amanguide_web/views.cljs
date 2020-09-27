@@ -65,7 +65,7 @@
             {:type "text"
              :className "npr"
              :value type-amount
-             :on-change #(re-frame/dispatch [::events/update-item-level (-> % .-target .-value) type])}]
+             :on-change #(re-frame/dispatch [::events/update-item-level (js/parseInt (-> % .-target .-value)) type])}]
            [:> sui-form-select
             {:compact true
              :options
@@ -99,7 +99,7 @@
         [:> sui-form-field {:width "eight"}
          [:> sui-header {:as "h4" :textAlign "center"} "Next Price"]]]]
       [:> sui-grid-column {:width "six"}]
-      (for [item (keys (sort-by :order @masterdata))]
+      (for [item (keys (sort-by #(get-in (val %) [:order]) @masterdata))]
         [item-row-component item])]]))
 
 (defn page-content []

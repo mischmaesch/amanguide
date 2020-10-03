@@ -13,3 +13,8 @@
  ::update-item-level
  (fn [db [_ new-value type]]
    (assoc-in db [:inventory type] new-value)))
+
+(re-frame/reg-event-db
+ ::update-runes
+ (fn [db [_ new-value]]
+   (assoc-in db [:runes] new-value)))

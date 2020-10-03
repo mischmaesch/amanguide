@@ -21,7 +21,7 @@
 (re-frame/reg-sub
  ::entity-current-amount
  (fn [db [_ entity]]
-   (get-in db [:inventory entity])))
+    (get-in db [:inventory entity])))
 
 (re-frame/reg-sub
  ::entity-next-price
@@ -37,3 +37,17 @@
    [(re-frame/subscribe [::entity-next-price entity])])
  (fn [[next-price] _]
    (.toExponential next-price)))
+
+(re-frame/reg-sub
+ ::runes
+ (fn [db _]
+   (:runes db)))
+
+(re-frame/reg-sub
+ ::entity-current-income
+ (fn [[_ entity]]
+   [(re-frame/subscribe [::entity-masterdata entity])
+    (re-frame/subscribe [::entity-current-amount entity])
+    (re-frame/subscribe [::runes])])
+ (fn [[entity-data amount runes] _]
+   (logic/calc-income (:base-income entity-data) amount runes)))

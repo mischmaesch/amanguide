@@ -61,4 +61,5 @@
               :vip 0
               :snacks 0
               :monster 0
-              :toilet 0}})
+              :toilet 0}
+  :runes 0})

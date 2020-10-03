@@ -30,28 +30,34 @@
    [:div {:class "header item"} "AMANGUIDE"]])
 
 (defn page-content-top-menu []
-  [:> sui-grid
-   {:centered true
-    :columns 4}
-   [:> sui-grid-column {:width "four"}
-    [:> sui-button-group {:size "mini" :widths "five"}
-     [:> sui-button "1"]
-     [:> sui-button "10"]
-     [:> sui-button "25"]
-     [:> sui-button "100"]
-     [:> sui-button "BP"]]]
-   [:> sui-grid-column {:width "four"}
-    [:> sui-header {:as "h1" :text-align "center"} "Arena Manager"]]
-   [:> sui-grid-column {:width "two"}]
-   [:> sui-grid-column {:width "four"}
-    [:> sui-form {:size "mini"}
-      [:div
-       [:> sui-form-input {:type "text" :placeholder "Runes"}]]]]])
+  (let [runes (re-frame/subscribe [::subs/runes])]
+    [:> sui-grid
+     {:centered true
+      :columns 4}
+     [:> sui-grid-column {:width "four"}
+      [:> sui-button-group {:size "mini" :widths "five"}
+       [:> sui-button "1"]
+       [:> sui-button "10"]
+       [:> sui-button "25"]
+       [:> sui-button "100"]
+       [:> sui-button "BP"]]]
+     [:> sui-grid-column {:width "four"}
+      [:> sui-header {:as "h1" :text-align "center"} "Arena Manager"]]
+     [:> sui-grid-column {:width "two"}]
+     [:> sui-grid-column {:width "four"}
+      [:> sui-form {:size "mini"}
+       [:div
+        [:> sui-form-input
+         {:type "text"
+          :placeholder "Runes"
+          :value @runes
+          :on-change #(re-frame/dispatch [::events/update-runes (js/parseInt (-> % .-target .-value))])}]]]]]))
 
 (defn item-row-component [type]
   (let [masterdata (re-frame/subscribe [::subs/masterdata])
         inventory (re-frame/subscribe [::subs/inventory])
-        next-price (re-frame/subscribe [::subs/entity-next-price-formatted type])]
+        next-price (re-frame/subscribe [::subs/entity-next-price-formatted type])
+        current-income (re-frame/subscribe [::subs/entity-current-income type])]
     (fn [type]
       (let [type-data (get @masterdata type)
             type-amount (get @inventory type)]
@@ -78,7 +84,7 @@
          [:> sui-grid-column {:width "three"}
           [:> sui-form-group {:width "two"}
            [:> sui-form-input {:type "text" :width "nine" :value @next-price}]
-           [:> sui-form-input {:type "text" :width "seven"}]]]
+           [:> sui-form-input {:type "text" :width "seven" :value @current-income}]]]
          [:> sui-grid-column {:width "six"}]]))))
 
 (defn page-content-main-form []
@@ -97,7 +103,9 @@
       [:> sui-grid-column {:width "three"}
        [:> sui-form-group {:widths "two"}
         [:> sui-form-field {:width "eight"}
-         [:> sui-header {:as "h4" :textAlign "center"} "Next Price"]]]]
+         [:> sui-header {:as "h4" :textAlign "center"} "Next Price"]]
+        [:> sui-form-field {:width "eight"}
+         [:> sui-header {:as "h4" :textAlign "center"} "Income/s"]]]]
       [:> sui-grid-column {:width "six"}]
       (for [item (keys (sort-by #(get-in (val %) [:order]) @masterdata))]
         [item-row-component item])]]))
